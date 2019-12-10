@@ -1,0 +1,254 @@
+// CIS 2110 Project # 3
+// Java Program Metro Event Sports Specialists Daily Sales Summary
+// Jason Kelly
+// 11/25/2019
+
+import java.io.*;
+import java.util.Scanner;
+
+public class Project3
+{
+   public static void main(String args[]) throws IOException
+   {
+      TransactionReport transRpt;
+      transRpt = new TransactionReport();
+      transRpt.appMain();
+   }
+}
+
+class TransactionReport
+{
+   String transactionDate;
+   String employeeName;
+   float yearToDateSales;
+   int salesNumber;
+   String salesType;
+   float salesAmount;
+   Scanner stdin;
+   float averageTransactionAmount;
+   float totalEmployeeSales;
+   float revisedEmployeeYearToDateSales;
+   float employeeYearToDateSales;
+   float employeeBonusRate;
+   float employeeBonus;
+   float totalFoodSales;
+   float totalSundriesSales;
+   float totalAlcoholSales;
+   float totalDaySales;
+   float totalYearToDateSales;
+   float highestSalesAmount;
+   String highestSalesEmployee;
+   int salesCounter;
+   int salesNumberCount; 
+
+   public void appMain() throws IOException {
+      System.out.println("##################################");
+      System.out.println("#      Solution for Proj #3      #");
+      System.out.println("# Metro Event Sports Specialists #");
+      System.out.println("#        Game Day Report         #");
+      System.out.println("#          Jason Kelly           #");
+      System.out.println("##################################");
+      
+      stdin = new Scanner(System.in);
+     
+      InitializeVariables();
+      TransactionInfo();
+      GetEmployeeName();
+      GetEmployeeYearToDateSales();
+      HeaderReportOut();
+      GetSalesNumber();
+      GetSalesInfo();
+      GetTotalEmployeeSales();
+      
+      // Continous loop until done
+      while ( 1 == 1 ) {
+         // Get sales transaction number
+         GetSalesNumber();
+         
+         // If the sales number is 0 finalize totals for employee
+         if (salesNumber == 0) {
+           // Calculate employee bonus
+           GetEmployeeBonus();
+          
+           // Update and print current employee year to date sales
+           UpdateEmployeeYearToDateSales();
+           
+           // Print employee summary
+           FooterReportOut();
+           
+           // Start new employee
+           GetEmployeeName();
+           
+           // If employee name is "Done", get out of loop
+           if ( employeeName.equals("Done") ) {
+             break;
+           }
+           
+           // Reset values for new employee
+           employeeBonus = 0;
+           totalEmployeeSales = 0;
+           
+           // Input new employee info
+           GetEmployeeYearToDateSales();
+           HeaderReportOut();
+           GetSalesNumber();
+         }
+         
+         // Get sales transaction
+         GetSalesInfo();
+         GetTotalEmployeeSales();
+      }
+     
+     // Print final report
+     FinalReportOut();
+   }
+
+
+   void InitializeVariables(){
+    
+      transactionDate = "dd/mm/yyyy";
+      employeeName = "Unassigned";
+      employeeYearToDateSales = 0;
+      salesNumber = 1;
+      salesType = "Unassigned";
+      salesAmount = 0;
+      averageTransactionAmount = 0;
+      totalEmployeeSales = 0;
+      revisedEmployeeYearToDateSales = 0;
+      employeeBonusRate = 0.05f;
+      employeeBonus = 0;
+      totalFoodSales = 0;
+      totalSundriesSales = 0;
+      totalAlcoholSales = 0;
+      totalDaySales = 0;
+      totalYearToDateSales = 0;
+      highestSalesAmount = 0;
+      highestSalesEmployee = "Unassigned";
+      salesCounter = 0;
+      salesNumberCount =0; 
+   }
+   
+   void TransactionInfo() {
+      System.out.print(  "Input the Date: ");
+      transactionDate = stdin.nextLine();  
+      //System.out.println("The Date is: " + transactionDate);    
+   }
+      
+   void GetEmployeeName() {
+      System.out.print("Input Emplyee Name: ");
+      employeeName = stdin.nextLine();  
+      //System.out.println("The Employee is: " + employeeName);
+   }
+   
+   void GetEmployeeYearToDateSales() {
+      System.out.print("Input Employee Year to Date Sales: ");
+      employeeYearToDateSales = stdin.nextFloat();  
+      //System.out.println("The Employee Year to date sales are: " + employeeYearToDateSales);
+      
+      totalYearToDateSales += employeeYearToDateSales;
+   }
+
+   void HeaderReportOut() {
+   
+      System.out.println("##################################################");
+      System.out.println("The Date is: " + transactionDate );
+      System.out.println("The Employee is: " + employeeName);
+      System.out.printf("The Employee Year to date sales are: $%.2f%n", employeeYearToDateSales);
+      System.out.println("--------------------------------------------------");
+      
+   }
+   
+   void FooterReportOut() {
+      System.out.println("--------------------------------------------------");
+      System.out.printf(employeeName + "'s Revised Year to Date Sales are: $%.2f%n", revisedEmployeeYearToDateSales);
+      System.out.printf("Total Daily Sales: $%.2f%n", totalEmployeeSales);
+      System.out.printf("Employee Bonus is: $%.2f%n", employeeBonus);
+      System.out.printf("Highest sale so far is %s with $%.2f%n", highestSalesEmployee, highestSalesAmount);
+      System.out.printf("Total Daily Sales so far: $%.2f%n", totalDaySales);
+      System.out.printf("Total Year to Date Sales so far: $%.2f%n", totalYearToDateSales);
+      System.out.println("##################################################");
+   }
+         
+   void GetSalesNumber() {
+      System.out.print("Input Sales Number: ");
+      salesNumber = stdin.nextInt();  
+      //System.out.println("The Sales Number is: " + salesNumber);
+      stdin.nextLine(); 
+   }
+   
+   void GetSalesInfo() {
+      System.out.print("Input Sales Type: ");
+      salesType = stdin.next();  
+      //System.out.println("The Sales type is: " + salesType);
+      
+      System.out.print("Input Sales Amount: ");
+      salesAmount = stdin.nextFloat();  
+      //System.out.println("The Sales Amount is: " + salesAmount);      
+      
+      totalDaySales += salesAmount;
+      totalYearToDateSales += salesAmount;
+      
+      // If sale amount is more than previous highest sale
+      if (salesAmount > highestSalesAmount) {
+        highestSalesAmount = salesAmount;
+        highestSalesEmployee = employeeName;
+      }
+      
+      // If sale is Food or drink
+      if (salesType.equals("F")) {
+        totalFoodSales += salesAmount;
+        //System.out.println("totalFoodSales = " + totalFoodSales);
+      }
+      
+      // If sale is Alochol
+      if (salesType.equals("A")) {
+        totalAlcoholSales += salesAmount;
+        //System.out.println("totalAlcoholSales = " + totalAlcoholSales);
+      }
+      
+      // If sale is Sundries
+      if (salesType.equals("S")) {
+        totalSundriesSales += salesAmount;
+        //System.out.println("totalSundriesSales = " + totalSundriesSales);
+      }
+      
+   }
+   
+   void GetTotalEmployeeSales() {
+      totalEmployeeSales = totalEmployeeSales + salesAmount;
+      System.out.printf("The Total Employee Sales are: $%.2f%n", totalEmployeeSales);      
+   } 
+   
+   void GetEmployeeBonus() {
+      employeeBonus = totalEmployeeSales * employeeBonusRate;
+      //System.out.printf("Employee Bonus is: $%.2f%n", employeeBonus);
+   } 
+   
+   void UpdateEmployeeYearToDateSales() {
+      revisedEmployeeYearToDateSales = employeeYearToDateSales + totalEmployeeSales;
+      //System.out.printf(employeeName + "'s Revised Year to Date Sales are: $%.2f%n", revisedEmployeeYearToDateSales );
+   }
+   
+   void FinalReportOut(){
+     System.out.println("##################################################");
+     System.out.printf("Total Food Sales for Day: $%.2f%n", totalFoodSales);
+     System.out.printf("Total Alcohol Sales for Day: $%.2f%n", totalAlcoholSales);
+     System.out.printf("Total Sundries Sales for Day: $%.2f%n", totalSundriesSales);
+      System.out.printf("Highest sale is %s with $%.2f%n", highestSalesEmployee, highestSalesAmount);
+      System.out.printf("Total Daily Sales: $%.2f%n", totalDaySales);
+      System.out.printf("Total Year to Date Sales: $%.2f%n", totalYearToDateSales);
+      System.out.println("##################################################");
+
+   }   
+      
+    
+    
+    
+    
+    
+    
+    
+    
+      
+      
+}
